@@ -33,12 +33,12 @@ pip install -r requirements.txt
 
 ### 3. Required Libraries
 
---- PyTorch: For neural network architecture and training.
---- OpenCV: For real-time video processing and gesture recognition.
---- pyautogui: For controlling mouse movements and clicks.
---- onnx: For model export and deployment.
+- PyTorch: For neural network architecture and training.
+- OpenCV: For real-time video processing and gesture recognition.
+- PyAutogui: For controlling mouse movements and clicks.
+- Onnx: For model export and deployment.
 
 ### License
-This project is licensed under the MIT License - see the [LICENSE] file for details.
+This project is licensed under the MIT License - see the [MIT LICENSE](LICENSE) file for details.
 
 
