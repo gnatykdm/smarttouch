@@ -10,3 +10,6 @@ def load_model(model: torch.nn.Module, path: str) -> torch.nn.Module:
         raise ValueError("model or path is None")
     model.load_state_dict(torch.load(path))
     return model
+
+def set_device() -> str:
+    return 'cuda:0' if torch.cuda.is_available() else 'cpu'

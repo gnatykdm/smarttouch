@@ -1,50 +1,38 @@
 import torch
+from model import GestureNN
 from torch.optim import Adam
-from torch.nn import Module, CrossEntropyLoss
-from torch.utils.data import DataLoader
-from .model import GestureNN
+from torch import DataLoader
+from torchvision import transforms
+from ..src.utils import set_device
 from ..src.dataset import GestureDataSet
-from ..src import utils
+from ..src.utils import save_model
+from typing import Any
 
+device: str = set_device()
+learning_rate: float = 1e-3
 
-learning_rate = 1e-3
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-def train_model(model: GestureNN, epochs: int, batch_size: int, path: str) -> GestureNN:
-    model: Module = model.to(device)
-    model.train()
-
-    optimizer: Adam = Adam(model.parameters(), lr=learning_rate)
-    criterion: CrossEntropyLoss = CrossEntropyLoss()
-
-    train_dataset: GestureDataSet = GestureDataSet(path)
-    train_loader: DataLoader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-
+def train_model(model: GestureNN, path: str, batch_size: int, transform: transforms.Compose, epochs: int) -> None:
     try:
+        train_set: GestureDataSet = GestureDataSet(path, transform)
+        train_loader: DataLoader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
+
+        optimizer: Adam = Adam(model.parameters(), lr=learning_rate)
+        criterion: Any = torch.nn.CrossEntropyLoss()
+
         for epoch in range(epochs):
-            r_loss: float = 0.00
+            for labels, images in train_loader:
+                images = images.to(device)
+                labels = labels.to(device)
 
-            for images, labels in train_loader:
-                images, labels = images.to(device), labels.to(device)
                 optimizer.zero_grad()
-
-                output: torch.Tensor = model(images)
-                loss: torch.Tensor = criterion(output, labels)
-
+                outputs = model(images)
+                loss = criterion(outputs, labels)
                 loss.backward()
                 optimizer.step()
-
-                r_loss += loss.item()
-
-            r_loss /= len(train_loader)
             if epoch % 10 == 0:
-                print(f"EPOCH: {epoch} | LOSS: {r_loss:4f}")
+                print(f"Epoch: {epoch}, Loss: {loss.item()}")
 
             if epoch % 100 == 0:
-                utils.save_model(model, f"saved/trained_model_{epoch}.pth")
-
+                save_model(model, f"../models/model_{epoch}.pth")
     except Exception as e:
-        print(f"Error -> {e}")
-
-    utils.save_model(model, "final_model.pth")
-    return model
+        raise ValueError(f"Error in train_model -> {e}")
