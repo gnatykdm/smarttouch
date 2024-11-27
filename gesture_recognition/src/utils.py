@@ -1,4 +1,6 @@
 import torch
+import time
+from typing import Any
 
 def save_model(model: torch.nn.Module, path: str) -> None:
     if model is None or path is None:
@@ -13,3 +15,11 @@ def load_model(model: torch.nn.Module, path: str) -> torch.nn.Module:
 
 def set_device() -> str:
     return 'cuda:0' if torch.cuda.is_available() else 'cpu'
+
+
+def timer(func: Any) -> Any:
+    def wrapper(*args, **kwargs):
+        start: float = time.time()
+        end: float = time.time()
+        print(f"Function -> {func.__name__} was work -> {end - start:.6f}s")
+    return wrapper
