@@ -19,7 +19,7 @@ To get started with **SmartTouch**, follow the steps below:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/smarttouch.git
+git clone https://github.com/gnatykdm/smarttouch.git
 ```
 
 ### 2. Install Dependencies
