@@ -1,6 +1,7 @@
+import os
 import torch
 import time
-from typing import Any
+from typing import Any, List
 
 def save_model(model: torch.nn.Module, path: str) -> None:
     if model is None or path is None:
@@ -23,3 +24,13 @@ def timer(func: Any) -> Any:
         end: float = time.time()
         print(f"Function -> {func.__name__} was work -> {end - start:.6f}s")
     return wrapper
+
+
+def show_all_models(path: str) -> None:
+    if path is None:
+        raise ValueError("File Path can't be empty")
+
+    all: List[str] = ""
+    for model in os.path.dirname(path):
+        all += model
+    return model
